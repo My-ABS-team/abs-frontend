@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base layer: global resets & CSS custom properties ─────────────────── */
+@layer base {
+  :root {
+    /* Scrollbar styling — dark theme */
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.navy.600') theme('colors.navy.900');
+  }
+
+  ::-webkit-scrollbar        { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track  { background: theme('colors.navy.900'); }
+  ::-webkit-scrollbar-thumb  { background: theme('colors.navy.600'); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: theme('colors.navy.500'); }
+
+  html {
+    @apply bg-navy-950 text-white antialiased;
+    font-feature-settings: "ss01", "ss02"; /* DM Sans stylistic sets */
+  }
+
+  body {
+    @apply bg-navy-950 min-h-screen;
+  }
+
+  /* Default focus ring — gold coloured for brand consistency */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-gold ring-offset-2 ring-offset-navy-900;
+  }
+
+  /* Headings inherit weight from Tailwind utility classes */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans tracking-tight;
+  }
+}
+
+/* ─── Component layer: reusable class groups ────────────────────────────── */
+@layer components {
+
+  /* ── Cards ── */
+  .card {
+    @apply bg-navy-800 border border-navy-700 rounded-card;
+  }
+  .card-elevated {
+    @apply bg-navy-750 border border-navy-700 rounded-card shadow-card;
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-medium
+           rounded-chip transition-all duration-150 focus-visible:ring-2
+           focus-visible:ring-gold disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-gold text-navy-950 hover:bg-gold-300 active:scale-[0.98]
+           px-5 py-2.5 text-sm;
+  }
+  .btn-secondary {
+    @apply btn border border-gold text-gold hover:bg-gold/10
+           active:scale-[0.98] px-5 py-2.5 text-sm;
+  }
+  .btn-ghost {
+    @apply btn text-navy-200 hover:text-white hover:bg-navy-700
+           px-4 py-2 text-sm;
+  }
+  .btn-danger {
+    @apply btn bg-market-down/20 text-market-down border border-market-down/30
+           hover:bg-market-down/30 px-4 py-2 text-sm;
+  }
+
+  /* ── Form inputs ── */
+  .input {
+    @apply w-full bg-navy-900 border border-navy-700 rounded-chip
+           px-3 py-2.5 text-sm text-white placeholder:text-navy-300
+           focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold
+           transition-colors duration-150;
+  }
+  .label {
+    @apply block text-label text-navy-200 mb-1.5 font-medium tracking-wide uppercase;
+  }
+
+  /* ── Status badges ── */
+  .badge-settled { @apply inline-flex items-center px-2 py-0.5 rounded-chip text-label font-medium bg-market-upBg text-market-up; }
+  .badge-pending  { @apply inline-flex items-center px-2 py-0.5 rounded-chip text-label font-medium bg-gold/10 text-gold; }
+  .badge-partial  { @apply inline-flex items-center px-2 py-0.5 rounded-chip text-label font-medium bg-navy-700 text-navy-200; }
+  .badge-open     { @apply inline-flex items-center px-2 py-0.5 rounded-chip text-label font-medium bg-navy-750 text-navy-200 border border-navy-600; }
+
+  /* ── Price change indicators ── */
+  .price-up   { @apply text-market-up font-medium; }
+  .price-down { @apply text-market-down font-medium; }
+  .price-flat { @apply text-market-flat; }
+
+  /* ── Skeleton loader ── */
+  .skeleton {
+    @apply rounded bg-navy-700 animate-shimmer;
+    background-image: linear-gradient(
+      90deg,
+      theme('colors.navy.700') 0%,
+      theme('colors.navy.600') 50%,
+      theme('colors.navy.700') 100%
+    );
+    background-size: 200% 100%;
+  }
+
+  /* ── Section divider ── */
+  .divider {
+    @apply border-t border-navy-700 my-6;
+  }
+
+  /* ── Sidebar nav item ── */
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-chip text-sm
+           text-navy-200 hover:text-white hover:bg-navy-700
+           transition-all duration-150 cursor-pointer;
+  }
+  .nav-item-active {
+    @apply nav-item text-gold bg-gold/10 hover:bg-gold/15 hover:text-gold;
+  }
+}
+
+/* ─── Utilities layer: one-off helpers ──────────────────────────────────── */
+@layer utilities {
+  /* Naira symbol rendered correctly at all sizes */
+  .naira::before { content: '₦'; }
+
+  /* Gradient text — used on landing page hero */
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #E5C05C 0%, #C9A84C 50%, #8C6A22 100%);
+  }
+
+  /* Pauses ticker animation on hover — better UX for reading prices */
+  .ticker-wrap:hover .animate-ticker {
+    animation-play-state: paused;
+  }
+
+  /* Truncate text with ellipsis — common in tables */
+  .truncate-cell {
+    @apply truncate max-w-0;
+  }
+}
