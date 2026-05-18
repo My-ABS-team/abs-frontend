@@ -79,7 +79,11 @@ export function Navbar() {
 
         {/* CTA + hamburger */}
         <div className="flex items-center gap-2 md:gap-3">
-          <Link to={ROUTES.LOGIN} className="hidden md:inline-flex btn-ghost text-sm">
+          <Link
+            to={ROUTES.LOGIN}
+            onClick={() => setIsMenuOpen(false)}
+            className="hidden md:inline-flex btn-ghost text-sm"
+          >
             Login
           </Link>
           <Link
