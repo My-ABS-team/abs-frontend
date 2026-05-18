@@ -19,6 +19,26 @@ export function Navbar() {
     return () => document.body.classList.remove('overflow-hidden')
   }, [isMenuOpen])
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 768px)')
+
+    const handleViewportChange = (event: MediaQueryListEvent | MediaQueryList) => {
+      if (event.matches) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    handleViewportChange(mediaQuery)
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleViewportChange)
+      return () => mediaQuery.removeEventListener('change', handleViewportChange)
+    }
+
+    mediaQuery.addListener(handleViewportChange)
+    return () => mediaQuery.removeListener(handleViewportChange)
+  }, [])
+
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-navy-950/80 backdrop-blur-sm border-b border-navy-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
