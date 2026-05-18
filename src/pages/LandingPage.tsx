@@ -298,13 +298,13 @@ export function LandingPage() {
             {/* Policy links — divider on mobile */}
             <div className="space-y-3 border-t border-navy-700 pt-8 md:border-t-0 md:pt-0">
               {FOOTER_LINKS.map((link) => (
-                <a
+                <button
                   key={link}
-                  href="#"
-                  className="block text-navy-300 text-sm hover:text-white transition-colors"
+                  type="button"
+                  className="block text-left text-navy-300 text-sm hover:text-white transition-colors"
                 >
                   {link}
-                </a>
+                </button>
               ))}
             </div>
 
