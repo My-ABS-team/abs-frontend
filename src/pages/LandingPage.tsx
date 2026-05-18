@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@/constants/routes'
-import { Shield, Zap, LineChart, ArrowRight, Mail, Phone, TrendingUp, TrendingDown } from 'lucide-react'
+import { Shield, Zap, LineChart, ArrowRight, TrendingUp, TrendingDown } from 'lucide-react'
+import { PublicFooter } from '@/components/layout/PublicFooter'
 
 interface TickerItem {
   label: string
@@ -50,14 +51,6 @@ const SECTOR_QUOTES = [
   { ticker: 'ZENITHBANK', sector: 'BANKING',   change: '+1.4%', up: true  },
   { ticker: 'SEPLAT',     sector: 'OIL & GAS', change: '-0.3%', up: false },
   { ticker: 'GTCO',       sector: 'FINTECH',   change: '+2.1%', up: true  },
-]
-
-const FOOTER_LINKS = [
-  'Complaint Policy',
-  'Data Protection',
-  'Wallet Top Up',
-  'Privacy Policy',
-  'Terms of Service',
 ]
 
 const CHART_BARS = [38, 42, 36, 50, 44, 58, 52, 64, 56, 70, 62, 78, 70, 85, 76, 90, 82, 94, 86, 98, 90, 96, 88, 100]
@@ -269,83 +262,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ─── Footer ───────────────────────────────────────────────────────── */}
-      <footer className="border-t border-navy-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-
-            {/* Brand */}
-            <div className="space-y-4">
-              <p className="text-white font-bold text-sm tracking-[0.12em] uppercase">
-                Capital Assets Limited
-              </p>
-              <div className="flex items-center gap-2">
-                {['SEC', 'NGX', 'NASD'].map((b) => (
-                  <span
-                    key={b}
-                    className="px-2 py-0.5 border border-navy-600 rounded text-label text-navy-300 uppercase tracking-widest"
-                  >
-                    {b}
-                  </span>
-                ))}
-              </div>
-              <p className="text-navy-400 text-xs leading-relaxed">
-                © 2024 Capital Assets Limited. Regulated by SEC, NGX, and NASD.
-                Registered as a Broker-Dealer and Investment Adviser.
-              </p>
-            </div>
-
-            {/* Policy links — divider on mobile */}
-            <div className="space-y-3 border-t border-navy-700 pt-8 md:border-t-0 md:pt-0">
-              {FOOTER_LINKS.map((link) => (
-                <button
-                  key={link}
-                  type="button"
-                  className="block text-left text-navy-300 text-sm hover:text-white transition-colors"
-                >
-                  {link}
-                </button>
-              ))}
-            </div>
-
-            {/* Office addresses — divider on mobile */}
-            <div className="space-y-6 border-t border-navy-700 pt-8 md:border-t-0 md:pt-0">
-              <div>
-                <p className="text-label text-gold uppercase tracking-widest mb-2">
-                  Lagos Head Office
-                </p>
-                <p className="text-navy-300 text-sm leading-relaxed">
-                  Dr. Nicholas House, 10th Floor,<br />
-                  Catholic Mission Street, Lagos.
-                </p>
-              </div>
-              <div>
-                <p className="text-label text-gold uppercase tracking-widest mb-2">
-                  Abuja Branch
-                </p>
-                <p className="text-navy-300 text-sm leading-relaxed">
-                  Wuse II, Federal Capital Territory,<br />
-                  Abuja, Nigeria.
-                </p>
-              </div>
-              <div className="flex items-center gap-2 pt-1">
-                <a
-                  href="mailto:info@capitalassets.ng"
-                  className="text-navy-400 hover:text-gold transition-colors p-2 -m-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
-                >
-                  <Mail size={17} />
-                </a>
-                <a
-                  href="tel:+2341234567890"
-                  className="text-navy-400 hover:text-gold transition-colors p-2 -m-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
-                >
-                  <Phone size={17} />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   )
 }
