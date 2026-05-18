@@ -1,26 +1,8 @@
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@/constants/routes'
-import { Shield, Zap, LineChart, ArrowRight, TrendingUp, TrendingDown } from 'lucide-react'
+import { Shield, Zap, LineChart, ArrowRight } from 'lucide-react'
 import { PublicFooter } from '@/components/layout/PublicFooter'
-
-interface TickerItem {
-  label: string
-  value: string
-  change?: string
-  up?: boolean
-}
-
-const TICKER_ITEMS: TickerItem[] = [
-  { label: 'NGX ASI', value: '152,571.99' },
-  { label: 'MTNN', value: '₦245.50', change: '1.2%', up: true },
-  { label: 'DANGCEM', value: '₦450.00', change: '0.5%', up: false },
-  { label: 'FGN BOND 2029', value: '11.5% YIELD' },
-  { label: 'ZENITHBANK', value: '₦35.20', change: '0.8%', up: true },
-  { label: 'GTCO', value: '₦48.90', change: '2.1%', up: true },
-  { label: 'SEPLAT', value: '₦3,800', change: '0.3%', up: false },
-  { label: 'ACCESS', value: '₦21.50', change: '1.5%', up: true },
-  { label: 'AIRTELAFRI', value: '₦2,150', change: '0.6%', up: true },
-]
+import { MarketTickerTape } from '@/components/shared/MarketTickerTape'
 
 const FEATURES = [
   {
@@ -162,24 +144,7 @@ export function LandingPage() {
           </div>
         </div>
 
-        {/* Ticker tape */}
-        <div className="border-t border-navy-700 bg-navy-900 py-3 overflow-hidden ticker-wrap shrink-0">
-          <div className="flex gap-8 animate-ticker whitespace-nowrap">
-            {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-              <span key={i} className="inline-flex items-center gap-2 text-ticker">
-                <span className="text-navy-300 font-medium">{item.label}</span>
-                <span className="text-white">{item.value}</span>
-                {item.change !== undefined && (
-                  <span className={`flex items-center gap-0.5 ${item.up ? 'text-market-up' : 'text-market-down'}`}>
-                    {item.up ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
-                    {item.change}
-                  </span>
-                )}
-                <span className="text-navy-700 ml-2">|</span>
-              </span>
-            ))}
-          </div>
-        </div>
+        <MarketTickerTape />
       </section>
 
       {/* ─── Why Choose Capital Assets ────────────────────────────────────── */}

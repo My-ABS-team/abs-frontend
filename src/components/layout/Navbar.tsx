@@ -44,7 +44,11 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
 
         {/* Brand — CA badge on mobile, full wordmark on md+ */}
-        <Link to={ROUTES.HOME} className="flex items-center gap-2 shrink-0">
+        <Link
+          to={ROUTES.HOME}
+          onClick={() => setIsMenuOpen(false)}
+          className="flex items-center gap-2 shrink-0"
+        >
           <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gold md:hidden">
             <span className="text-xs font-bold text-navy-950">CA</span>
           </div>
@@ -78,7 +82,11 @@ export function Navbar() {
           <Link to={ROUTES.LOGIN} className="hidden md:inline-flex btn-ghost text-sm">
             Login
           </Link>
-          <Link to={ROUTES.REGISTER} className="btn-primary text-sm px-4 py-2 md:px-5 md:py-2.5">
+          <Link
+            to={ROUTES.REGISTER}
+            onClick={() => setIsMenuOpen(false)}
+            className="btn-primary text-sm px-4 py-2 md:px-5 md:py-2.5"
+          >
             Create Account
           </Link>
 
