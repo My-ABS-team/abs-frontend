@@ -28,12 +28,25 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Manually split large vendor libs so the main bundle stays lean
-        manualChunks: {
-          'vendor-react':   ['react', 'react-dom', 'react-router-dom'],
-          'vendor-query':   ['@tanstack/react-query'],
-          'vendor-charts':  ['recharts'],
-          'vendor-forms':   ['react-hook-form', 'zod', '@hookform/resolvers'],
-          'vendor-zustand': ['zustand'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+              return 'vendor-react';
+            }
+            if (id.includes('@tanstack/react-query')) {
+              return 'vendor-query';
+            }
+            if (id.includes('recharts')) {
+              return 'vendor-charts';
+            }
+            if (id.includes('react-hook-form') || id.includes('zod') || id.includes('@hookform/resolvers')) {
+              return 'vendor-forms';
+            }
+            if (id.includes('zustand')) {
+              return 'vendor-zustand';
+            }
+            return 'vendor';
+          }
         },
       },
     },
