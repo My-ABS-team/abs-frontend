@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@/constants/routes'
-import { Shield, Zap, LineChart, ArrowRight } from 'lucide-react'
+import { Shield, Zap, LineChart, ArrowRight, TrendingUp } from 'lucide-react'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import { MarketTickerTape } from '@/components/shared/MarketTickerTape'
 
