@@ -61,14 +61,8 @@ const config: Config = {
 
       // ─── Typography ───────────────────────────────────────────────────────
       fontFamily: {
-        // Use system font stack in dev; swap to 'DM Sans' or 'Geist' later
-        sans: [
-          '"DM Sans"',
-          'ui-sans-serif',
-          'system-ui',
-          '-apple-system',
-          'sans-serif',
-        ],
+        sans: ['"Inter"', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Manrope"', '"Inter"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', '"Fira Code"', 'ui-monospace', 'monospace'],
       },
 

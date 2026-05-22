@@ -18,6 +18,7 @@ const LandingPage    = lazy(() => import('@/pages/LandingPage').then((m) => ({ d
 const ResearchPage   = lazy(() => import('@/pages/ResearchPage').then((m) => ({ default: m.ResearchPage })))
 const AdvisoryPage   = lazy(() => import('@/pages/AdvisoryPage').then((m) => ({ default: m.AdvisoryPage })))
 const ContactPage    = lazy(() => import('@/pages/ContactPage').then((m) => ({ default: m.ContactPage })))
+const ComingSoonPage = lazy(() => import('@/pages/ComingSoonPage').then((m) => ({ default: m.ComingSoonPage })))
 
 // Auth pages
 const LoginPage      = lazy(() => import('@/pages/LoginPage').then((m) => ({ default: m.LoginPage })))
@@ -26,13 +27,13 @@ const RegisterPage   = lazy(() => import('@/pages/RegisterPage').then((m) => ({ 
 // App pages
 const DashboardPage      = lazy(() => import('@/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })))
 const MarketTerminalPage = lazy(() => import('@/pages/MarketTerminalPage').then((m) => ({ default: m.MarketTerminalPage })))
-const PortfolioPage      = lazy(() => import('@/pages/PortfolioPage').then((m) => ({ default: m.PortfolioPage })))
 const VaultPage          = lazy(() => import('@/pages/VaultPage').then((m) => ({ default: m.VaultPage })))
 const MutualFundsPage    = lazy(() => import('@/pages/MutualFundsPage').then((m) => ({ default: m.MutualFundsPage })))
 const AppResearchPage    = lazy(() => import('@/pages/AppResearchPage').then((m) => ({ default: m.AppResearchPage })))
 const CalculatorsPage    = lazy(() => import('@/pages/CalculatorsPage').then((m) => ({ default: m.CalculatorsPage })))
 const CompliancePage     = lazy(() => import('@/pages/CompliancePage').then((m) => ({ default: m.CompliancePage })))
 const TradeHistoryPage   = lazy(() => import('@/pages/TradeHistoryPage').then((m) => ({ default: m.TradeHistoryPage })))
+const SettingsPage       = lazy(() => import('@/pages/SettingsPage').then((m) => ({ default: m.SettingsPage })))
 
 // ── Page loading fallback ──────────────────────────────────────────────────────
 function PageLoader() {
@@ -54,9 +55,10 @@ const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [
       { path: ROUTES.HOME,     element: <Suspense fallback={<PageLoader />}><LandingPage /></Suspense> },
-      { path: ROUTES.RESEARCH, element: <Suspense fallback={<PageLoader />}><ResearchPage /></Suspense> },
-      { path: ROUTES.ADVISORY, element: <Suspense fallback={<PageLoader />}><AdvisoryPage /></Suspense> },
-      { path: ROUTES.CONTACT,  element: <Suspense fallback={<PageLoader />}><ContactPage /></Suspense> },
+      { path: ROUTES.RESEARCH,    element: <Suspense fallback={<PageLoader />}><ResearchPage /></Suspense> },
+      { path: ROUTES.ADVISORY,    element: <Suspense fallback={<PageLoader />}><AdvisoryPage /></Suspense> },
+      { path: ROUTES.CONTACT,     element: <Suspense fallback={<PageLoader />}><ContactPage /></Suspense> },
+      { path: '/coming-soon',     element: <Suspense fallback={<PageLoader />}><ComingSoonPage /></Suspense> },
     ],
   },
 
@@ -97,10 +99,6 @@ const router = createBrowserRouter([
             element: <Suspense fallback={<PageLoader />}><MarketTerminalPage /></Suspense>,
           },
           {
-            path: ROUTES.PORTFOLIO,
-            element: <Suspense fallback={<PageLoader />}><PortfolioPage /></Suspense>,
-          },
-          {
             path: ROUTES.VAULT,
             element: <Suspense fallback={<PageLoader />}><VaultPage /></Suspense>,
           },
@@ -123,6 +121,10 @@ const router = createBrowserRouter([
           {
             path: ROUTES.TRADE_HISTORY,
             element: <Suspense fallback={<PageLoader />}><TradeHistoryPage /></Suspense>,
+          },
+          {
+            path: ROUTES.SETTINGS,
+            element: <Suspense fallback={<PageLoader />}><SettingsPage /></Suspense>,
           },
         ],
       },

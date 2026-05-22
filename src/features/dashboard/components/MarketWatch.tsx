@@ -1,29 +1,23 @@
 import { useNavigate } from 'react-router-dom'
-import { RefreshCw } from 'lucide-react'
+import { Filter, RefreshCw, ArrowRight } from 'lucide-react'
 import { useMarketWatch } from '../hooks/useDashboard'
 import { useUIStore } from '@/stores/uiStore'
-import { ChangeBadge, CurrencyDisplay } from '@/components/shared/CurrencyDisplay'
-import { TableSkeleton } from '@/components/shared/SectionLoader'
 import { ROUTES } from '@/constants/routes'
-import { cn } from '@/lib/utils'
 
-// Tiny sparkline bar chart — 7 bars representing the 7D trend
-function SparkBars({ positive }: { positive: boolean }) {
-  const heights = [40, 55, 35, 70, 45, 80, positive ? 95 : 30]
+function Sparkline({ positive }: { positive: boolean }) {
+  const pts = positive
+    ? [0,8,5,12,9,18,14,22,18,28]
+    : [28,22,25,18,20,12,16,10,12,5]
+  const w = 80, h = 28
+  const xs = pts.map((_, i) => (i / (pts.length - 1)) * w)
+  const mn = Math.min(...pts), mx = Math.max(...pts)
+  const ys = pts.map(v => h - ((v - mn) / (mx - mn || 1)) * h)
+  const d = xs.map((x, i) => `${i === 0 ? 'M' : 'L'} ${x} ${ys[i]}`).join(' ')
+  const color = positive ? 'var(--green-300)' : 'var(--red-100)'
   return (
-    <div className="flex items-end gap-px h-6 w-12">
-      {heights.map((h, i) => (
-        <div
-          key={i}
-          className={cn(
-            'flex-1 rounded-sm',
-            positive ? 'bg-market-up' : 'bg-market-down',
-            i < heights.length - 1 && 'opacity-50'
-          )}
-          style={{ height: `${h}%` }}
-        />
-      ))}
-    </div>
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
+      <path d={d} stroke={color} strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   )
 }
 
@@ -38,68 +32,87 @@ export function MarketWatch() {
   }
 
   return (
-    <div className="card overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-navy-700">
-        <h2 className="text-sm font-semibold text-white">Market Watch</h2>
+    <div className="card" style={{ overflow: 'hidden' }}>
+      <div className="row between" style={{ padding: '16px 20px', borderBottom: '1px solid var(--line)' }}>
+        <div>
+          <div style={{ fontWeight: 600, color: 'var(--text-0)', fontSize: 15 }}>Market Watch</div>
+          <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>Top holdings & watchlist</div>
+        </div>
+        <div className="row gap-2">
+          <button className="btn-icon" style={{ width: 32, height: 32 }}><Filter size={14} /></button>
+          <button
+            className="btn-icon"
+            style={{ width: 32, height: 32 }}
+            onClick={() => refetch()}
+            aria-label="Refresh"
+          >
+            <RefreshCw size={14} style={{ animation: isFetching ? 'spin 1s linear infinite' : 'none' }} />
+          </button>
+        </div>
+      </div>
+
+      <div style={{ overflowX: 'auto', padding: '0 8px 16px' }}>
+        <table className="table" style={{ minWidth: 500 }}>
+          <thead>
+            <tr>
+              <th style={{ paddingLeft: 16 }}>Symbol</th>
+              <th>Last Price</th>
+              <th>Change</th>
+              <th>7D Trend</th>
+              <th style={{ paddingRight: 16 }}></th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i}>
+                    <td style={{ paddingLeft: 16 }}><div className="skeleton" style={{ height: 14, width: 80 }} /></td>
+                    <td><div className="skeleton" style={{ height: 14, width: 60 }} /></td>
+                    <td><div className="skeleton" style={{ height: 14, width: 50 }} /></td>
+                    <td><div className="skeleton" style={{ height: 14, width: 80 }} /></td>
+                    <td />
+                  </tr>
+                ))
+              : (data ?? []).map((quote) => (
+                  <tr
+                    key={quote.ticker}
+                    className="row-hover"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleRowClick(quote.ticker)}
+                  >
+                    <td style={{ paddingLeft: 16 }}>
+                      <div style={{ fontWeight: 700, color: 'var(--text-0)' }}>{quote.ticker}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                        {quote.companyName}
+                      </div>
+                    </td>
+                    <td className="mono" style={{ fontWeight: 600, color: 'var(--text-0)' }}>
+                      ₦{(quote.lastPriceKobo / 100).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </td>
+                    <td className="mono" style={{ fontWeight: 600, color: quote.changePct >= 0 ? 'var(--green-300)' : 'var(--red-100)' }}>
+                      {quote.changePct >= 0 ? '+' : ''}{quote.changePct}%
+                    </td>
+                    <td>
+                      <Sparkline positive={quote.changePct >= 0} />
+                    </td>
+                    <td style={{ paddingRight: 16, textAlign: 'right' }}>
+                      <ArrowRight size={14} style={{ color: 'var(--text-3)' }} />
+                    </td>
+                  </tr>
+                ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{ padding: '12px 24px', borderTop: '1px solid var(--line)' }}>
         <button
-          onClick={() => refetch()}
-          className={cn('text-navy-400 hover:text-white transition-colors', isFetching && 'animate-spin')}
-          aria-label="Refresh market data"
+          onClick={() => navigate(ROUTES.MARKET)}
+          style={{ color: 'var(--gold-300)', fontSize: 13, fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
         >
-          <RefreshCw size={14} />
+          View Full Market Terminal <ArrowRight size={12} />
         </button>
       </div>
-
-      {/* Column headers */}
-      <div className="grid grid-cols-[2fr_1fr_1fr_1fr] px-5 py-2.5 border-b border-navy-700">
-        {['SYMBOL', 'LAST PRICE', 'CHANGE (%)', '7D TREND'].map((h) => (
-          <span key={h} className="text-label text-navy-400 uppercase tracking-widest">{h}</span>
-        ))}
-      </div>
-
-      {/* Rows */}
-      {isLoading ? (
-        <TableSkeleton rows={3} cols={4} />
-      ) : (
-        <div>
-          {(data ?? []).map((quote) => (
-            <button
-              key={quote.ticker}
-              onClick={() => handleRowClick(quote.ticker)}
-              className="w-full grid grid-cols-[2fr_1fr_1fr_1fr] px-5 py-3.5 border-b border-navy-700
-                         hover:bg-navy-700/50 transition-colors text-left group"
-            >
-              <div>
-                <p className="text-sm font-semibold text-white group-hover:text-gold transition-colors">
-                  {quote.ticker}
-                </p>
-                <p className="text-label text-navy-400 truncate">{quote.companyName}</p>
-              </div>
-              <CurrencyDisplay
-                kobo={quote.lastPriceKobo}
-                className="text-sm text-white self-center"
-              />
-              <ChangeBadge
-                pct={quote.changePct}
-                className="text-sm self-center"
-              />
-              <div className="self-center">
-                <SparkBars positive={quote.changePct >= 0} />
-              </div>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Footer link */}
-      <button
-        onClick={() => navigate(ROUTES.MARKET)}
-        className="w-full px-5 py-3.5 text-left text-sm text-navy-300 hover:text-gold
-                   transition-colors flex items-center gap-1"
-      >
-        View Full Market Terminal →
-      </button>
     </div>
   )
 }

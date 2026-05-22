@@ -22,13 +22,13 @@ export const ROUTES = {
   // :ticker is optional — /app/market opens with a default ticker
   MARKET:           '/app/market',
   MARKET_TICKER:    (ticker: string) => `/app/market/${ticker}`,
-  PORTFOLIO:        '/app/portfolio',
   VAULT:            '/app/vault',
   FUNDS:            '/app/funds',
   APP_RESEARCH:     '/app/research',
   CALCULATORS:      '/app/calculators',
   COMPLIANCE:       '/app/compliance',
   TRADE_HISTORY:    '/app/trade-history',
+  SETTINGS:         '/app/settings',
 } as const
 
 // Type helper — lets you use ROUTES values as types in props

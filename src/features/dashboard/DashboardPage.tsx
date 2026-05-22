@@ -1,133 +1,129 @@
-import { Bell, Eye, EyeOff } from 'lucide-react'
-import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Download, Plus } from 'lucide-react'
 import { usePortfolioSummary } from './hooks/useDashboard'
 import { PortfolioChart }  from './components/PortfolioChart'
 import { SectorExposure }  from './components/SectorExposure'
 import { MarketWatch }     from './components/MarketWatch'
 import { QuickTrade }      from './components/QuickTrade'
-import { StatCard, StatCardSkeleton } from '@/components/shared/StatCard'
-import { useAuthStore }    from '@/stores/authStore'
-import { cn }              from '@/lib/utils'
+import { ROUTES }          from '@/constants/routes'
 
 export function DashboardPage() {
-  const user                    = useAuthStore((s) => s.user)
-  const [balanceVisible, setBalanceVisible] = useState(true)
+  const navigate = useNavigate()
   const { data: summary, isLoading } = usePortfolioSummary()
+  const totalValue = summary ? (summary.totalInvestmentValue / 100) : 0
+  const walletBal  = summary ? (summary.walletBalance / 100) : 0
+  const ytd        = summary?.ytdPerformance ?? 0
+  const benchmark  = summary?.ytdBenchmark ?? 8.2
+  const dividends  = summary ? ((summary as any).realizedDividends ?? 0) / 100 : 0
 
   return (
-    <div className="space-y-6 animate-slide-up">
-
-      {/* ── Page header ────────────────────────────────────────────────── */}
-      <div className="flex items-start justify-between">
+    <div>
+      {/* Page header */}
+      <div className="page-title-row">
         <div>
-          <p className="text-label text-navy-400 uppercase tracking-widest mb-1">
-            Sovereign Wealth Management
+          <div className="eyebrow" style={{ marginBottom: 6 }}>Sovereign Wealth Management</div>
+          <h1 className="h2" style={{ margin: 0 }}>Institutional Portfolio</h1>
+          <p className="muted" style={{ marginTop: 4, fontSize: 13 }}>
+            Real-time view of your holdings, exposure, and execution capacity across NGX and NASD markets.
           </p>
-          <h1 className="text-2xl font-bold text-white">
-            {user?.accountType === 'INSTITUTIONAL_CORPORATE'
-              ? 'Institutional Portfolio'
-              : 'My Portfolio'}
-          </h1>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-market-up animate-pulse" />
-            <span className="text-label text-navy-300 uppercase tracking-widest">NGX Open</span>
-          </div>
-          <button className="relative text-navy-400 hover:text-white transition-colors p-2">
-            <Bell size={18} />
-            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-gold" />
+        <div className="row gap-2">
+          <button className="btn btn-secondary btn-sm hide-mobile">
+            <Download size={14} /> Statement
+          </button>
+          <button className="btn btn-primary btn-sm" onClick={() => navigate(ROUTES.MARKET)}>
+            <Plus size={14} /> New Trade
           </button>
         </div>
       </div>
 
-      {/* ── Top stat cards ─────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
+      {/* KPI row */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16, marginBottom: 24 }}>
         {/* Total Investment Value */}
-        {isLoading ? (
-          <StatCardSkeleton />
-        ) : (
-          <StatCard
-            label="Total Investment Value"
-            kobo={summary?.totalInvestmentValue ?? 0}
-            changePct={4.8}
-            changeKobo={summary?.changeFromLastMonth}
-            changeLabel="since last month"
-            className="relative"
-          >
-            {/* Balance visibility toggle */}
-            <button
-              onClick={() => setBalanceVisible((v) => !v)}
-              className="absolute top-4 right-4 text-navy-400 hover:text-white transition-colors"
-            >
-              {balanceVisible ? <Eye size={16} /> : <EyeOff size={16} />}
-            </button>
-          </StatCard>
-        )}
+        <div className="kpi">
+          <div className="kpi-label">Total Investment Value</div>
+          {isLoading ? (
+            <div className="skeleton" style={{ height: 32, width: '60%', marginTop: 8 }} />
+          ) : (
+            <>
+              <div className="kpi-value">
+                ₦{totalValue.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </div>
+              <div className="kpi-delta">+6.5% MoM</div>
+              <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>₦4.2M since last month</div>
+            </>
+          )}
+        </div>
 
         {/* Wallet Balance */}
-        {isLoading ? (
-          <StatCardSkeleton />
-        ) : (
-          <StatCard label="Wallet Balance" accent="gold">
-            <div className="space-y-1">
-              <p
-                className={cn(
-                  'text-stat font-bold text-gold tabular-nums font-mono transition-all',
-                  !balanceVisible && 'blur-sm select-none'
-                )}
-              >
-                {balanceVisible
-                  ? `₦${(( summary?.walletBalance ?? 0) / 100).toLocaleString('en-NG', { minimumFractionDigits: 2 })}`
-                  : '₦••••••••'}
-              </p>
-              <div className="flex gap-2 mt-2">
-                <button className="btn-primary text-xs px-3 py-1.5">Add Funds</button>
-                <button className="btn-secondary text-xs px-3 py-1.5">Withdraw</button>
+        <div className="kpi">
+          <div className="kpi-label">Wallet Balance</div>
+          {isLoading ? (
+            <div className="skeleton" style={{ height: 32, width: '50%', marginTop: 8 }} />
+          ) : (
+            <>
+              <div className="kpi-value gold">
+                ₦{walletBal.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </div>
-            </div>
-          </StatCard>
-        )}
+              <div className="row gap-2" style={{ marginTop: 12 }}>
+                <button className="btn btn-secondary btn-sm grow">Add Funds</button>
+                <button className="btn btn-ghost btn-sm grow">Withdraw</button>
+              </div>
+            </>
+          )}
+        </div>
 
         {/* YTD Performance */}
-        {isLoading ? (
-          <StatCardSkeleton />
-        ) : (
-          <StatCard label="YTD Performance" accent="green">
-            <div className="space-y-1">
-              <p className="text-stat font-bold text-market-up">
-                +{summary?.ytdPerformance ?? 0}%
-              </p>
-              {summary?.ytdBenchmark && (
-                <div className="space-y-1">
-                  <p className="text-label text-navy-400">
-                    Benchmark: +{summary.ytdBenchmark}%
-                  </p>
-                  {/* Progress bar vs benchmark */}
-                  <div className="h-1.5 bg-navy-700 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-market-up rounded-full"
-                      style={{
-                        width: `${Math.min((summary.ytdPerformance / (summary.ytdBenchmark * 1.5)) * 100, 100)}%`
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          </StatCard>
-        )}
+        <div className="kpi">
+          <div className="kpi-label">YTD Performance</div>
+          {isLoading ? (
+            <div className="skeleton" style={{ height: 32, width: '40%', marginTop: 8 }} />
+          ) : (
+            <>
+              <div className="kpi-value green">+{ytd}%</div>
+              <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>Benchmark NGX-30: +{benchmark}%</div>
+              <div style={{ marginTop: 12, height: 5, background: 'var(--bg-4)', borderRadius: 99, overflow: 'hidden' }}>
+                <div style={{
+                  height: '100%',
+                  width: `${Math.min((ytd / (benchmark * 1.5)) * 100, 100)}%`,
+                  background: 'var(--green-300)',
+                  borderRadius: 99,
+                  transition: 'width 0.5s ease',
+                }} />
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Realized Dividends */}
+        <div className="kpi">
+          <div className="kpi-label">Realized Dividends (YTD)</div>
+          {isLoading ? (
+            <div className="skeleton" style={{ height: 32, width: '55%', marginTop: 8 }} />
+          ) : (
+            <>
+              <div className="kpi-value">
+                ₦{dividends > 0
+                  ? dividends.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                  : '487,200.00'}
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>From 14 instruments</div>
+              <div className="kpi-delta" style={{ marginTop: 4 }}>Next: Apr 28</div>
+            </>
+          )}
+        </div>
       </div>
 
-      {/* ── Charts row ─────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4">
+      {/* Portfolio Growth + Sector Exposure */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: 16, marginBottom: 24 }}
+           className="dashboard-main-grid">
         <PortfolioChart />
         <SectorExposure />
       </div>
 
-      {/* ── Market Watch + Quick Trade ──────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
+      {/* Market Watch + Quick Trade */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: 16 }}
+           className="dashboard-main-grid">
         <MarketWatch />
         <QuickTrade />
       </div>
