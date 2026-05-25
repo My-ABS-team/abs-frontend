@@ -4,11 +4,10 @@ import { ROUTES } from '@/constants/routes'
 import { cn } from '@/lib/utils'
 
 const NAV_LINKS = [
-  { label: 'Services',  to: ROUTES.HOME },
-  { label: 'Research',  to: ROUTES.RESEARCH },
-  { label: 'Advisory',  to: ROUTES.ADVISORY },
-  { label: 'About',     to: '#about' },
-  { label: 'Contact',   to: ROUTES.CONTACT },
+  { label: 'Services', to: ROUTES.HOME,     end: true  },
+  { label: 'Research', to: ROUTES.RESEARCH, end: false },
+  { label: 'Advisory', to: ROUTES.ADVISORY, end: false },
+  { label: 'Contact',  to: ROUTES.CONTACT,  end: false },
 ] as const
 
 export function Navbar() {
@@ -59,10 +58,11 @@ export function Navbar() {
 
         {/* Nav links — desktop only */}
         <nav className="hidden md:flex items-center gap-1">
-          {NAV_LINKS.map(({ label, to }) => (
+          {NAV_LINKS.map(({ label, to, end }) => (
             <NavLink
               key={label}
               to={to}
+              end={end}
               className={({ isActive }) =>
                 cn(
                   'px-4 py-2 text-sm rounded-chip transition-colors duration-150',
@@ -112,10 +112,11 @@ export function Navbar() {
       {isMenuOpen && (
         <div className="md:hidden absolute top-16 inset-x-0 bg-navy-950/95 backdrop-blur-md border-b border-navy-700 animate-slide-up z-50">
           <nav className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
-            {NAV_LINKS.map(({ label, to }) => (
+            {NAV_LINKS.map(({ label, to, end }) => (
               <NavLink
                 key={label}
                 to={to}
+                end={end}
                 onClick={() => setIsMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
